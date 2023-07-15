@@ -31,4 +31,4 @@ RUN adduser --disabled-password\
             --no-create-home \
             django-user
 
-USER django-usergit
+USER django-user
