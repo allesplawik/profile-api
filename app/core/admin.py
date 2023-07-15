@@ -1,4 +1,4 @@
-from django.contrib import admin # noqa
+from django.contrib import admin  # noqa
 
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
@@ -23,7 +23,6 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     ]
-
 
 
 admin.site.register(UserProfile, UserAdmin)

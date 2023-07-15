@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 
-
 class UserAdmin(TestCase):
     def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(
@@ -43,4 +42,3 @@ class UserAdmin(TestCase):
         url = reverse('admin:core_userprofile_change', args=(self.user.id,))
         res = self.client.post(url)
         self.assertEqual(res.status_code, 200)
-
