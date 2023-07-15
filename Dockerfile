@@ -18,7 +18,8 @@ RUN apk add --update --no-cache postgresql-client && \
     apk add curl && \
     apk del .tmp-build-deps
 
-RUN pip install poetry && \
+RUN pip install pip --upgrade pip && \
+    pip install poetry && \
     poetry config virtualenvs.create false && \
     poetry install --with main
 
@@ -26,10 +27,8 @@ RUN if [ $ARG == "true" ];  \
       then \
         RUN poetry install --with dev ; \
     fi
-
-
 RUN adduser --disabled-password\
             --no-create-home \
             django-user
 
-USER django-user
+USER django-usergit
