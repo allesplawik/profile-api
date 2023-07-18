@@ -19,9 +19,11 @@ class CommandsTest(SimpleTestCase):
 
         mock_check.assert_called_once_with(databases=['default'])
 
-    def test_db_is_not_available(self, mock_check):
+    @patch('time.sleep')
+    def test_db_is_not_available(self, mock_sleep, mock_check):
         mock_check.side_effect = [Psycopg2OpError] * 2 + [OperationalError] * 3 + [True]
 
         call_command('wait_for_db')
 
         self.assertTrue(mock_check.call_count, 6)
+        mock_check.assert_called_with(databases=['default'])

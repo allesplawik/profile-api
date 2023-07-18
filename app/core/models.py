@@ -6,6 +6,8 @@ from django.contrib.auth.models import (
     BaseUserManager
 )
 
+from django.core.validators import MinValueValidator
+
 
 class UserProfileManager(BaseUserManager):
     """Manager to manage users in the system."""
@@ -52,3 +54,12 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Ingredient(models.Model):
+    name = models.CharField(max_length=255)
+    amount = models.IntegerField(validators=[MinValueValidator(1)])
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

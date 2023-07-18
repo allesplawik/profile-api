@@ -2,7 +2,7 @@ from django.contrib import admin  # noqa
 
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from core.models import UserProfile
+from core.models import UserProfile, Ingredient
 
 
 class UserAdmin(BaseUserAdmin):
@@ -26,3 +26,4 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(UserProfile, UserAdmin)
+admin.site.register(Ingredient)

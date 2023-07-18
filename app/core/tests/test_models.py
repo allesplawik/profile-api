@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from core.models import UserProfile
+from core.models import UserProfile, Ingredient
 
 from django.contrib.auth import get_user_model
 
@@ -70,3 +70,31 @@ class UserProfileTest(TestCase):
         self.assertTrue(user.check_password(creds['password']))
         self.assertTrue(user.is_staff)
         self.assertTrue(user.is_superuser)
+
+
+def create_ingriedient(name: str, amount: int, user: UserProfile):
+    return Ingredient.objects.create(name=name, amount=amount, user=user
+                                     )
+
+
+class IngredientsModelTest(TestCase):
+    def setUp(self):
+        self.user = create_user(
+            email='test@example.com',
+            name='Test User',
+            password='testpass123'
+        )
+
+    def test_create_ingredient_object(self):
+
+        ingredient_details = {
+            'name': 'potato',
+            'amount': 10,
+            'user': self.user
+        }
+
+        ingredient = create_ingriedient(**ingredient_details)
+
+        self.assertEqual(str(ingredient), ingredient_details['name'])
+        self.assertEqual(ingredient.user, self.user)
+        self.assertEqual(ingredient.amount, ingredient_details['amount'])
