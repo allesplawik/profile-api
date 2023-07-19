@@ -6,8 +6,6 @@ from django.contrib.auth.models import (
     BaseUserManager
 )
 
-from django.core.validators import MinValueValidator
-
 
 class UserProfileManager(BaseUserManager):
     """Manager to manage users in the system."""
@@ -58,7 +56,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
-    amount = models.IntegerField(validators=[MinValueValidator(1)])
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -71,7 +68,7 @@ class Recipe(models.Model):
     time_minutes = models.IntegerField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField(blank=True)
-    # ingredients = models.ManyToManyField("Ingredient")
+    ingredients = models.ManyToManyField("Ingredient")
 
     def __str__(self):
         return self.title

@@ -192,3 +192,25 @@ class PrivateRecipeTest(TestCase):
 
         recipes_exists = Recipe.objects.filter(user=new_user).exists()
         self.assertTrue(recipes_exists)
+
+    def test_create_recipe_create_ingredient(self):
+        payload = {
+            'title': 'Pizza',
+            'time_minutes': 15,
+            'price': Decimal('5.75'),
+            'description': 'Pizza italiana from Florence',
+            'ingredients': [
+                {
+                    'name': 'potato',
+                },
+                {
+                    'name': 'cheese',
+                }
+            ]
+        }
+
+        res = self.client.post(RECIPE_URL, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        recipe = Recipe.objects.get(user=self.user)
+        self.assertEqual(recipe.ingredients.count(), 2)
+        self.assertEqual(recipe.user, self.user)

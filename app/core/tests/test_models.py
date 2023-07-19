@@ -15,8 +15,8 @@ def create_superuser(email: str, name: str, password: str) -> UserProfile:
     return get_user_model().objects.create_superuser(email=email, name=name, password=password)
 
 
-def create_ingriedient(name: str, amount: int, user: UserProfile):
-    return Ingredient.objects.create(name=name, amount=amount, user=user)
+def create_ingriedient(name: str, user: UserProfile):
+    return Ingredient.objects.create(name=name, user=user)
 
 
 def create_recipe(**params) -> Recipe:
@@ -93,7 +93,6 @@ class IngredientsModelTest(TestCase):
     def test_create_ingredient_object(self):
         ingredient_details = {
             'name': 'potato',
-            'amount': 10,
             'user': self.user
         }
 
@@ -101,7 +100,6 @@ class IngredientsModelTest(TestCase):
 
         self.assertEqual(str(ingredient), ingredient_details['name'])
         self.assertEqual(ingredient.user, self.user)
-        self.assertEqual(ingredient.amount, ingredient_details['amount'])
 
 
 class RecipeModelTest(TestCase):

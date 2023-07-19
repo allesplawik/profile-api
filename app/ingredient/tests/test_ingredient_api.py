@@ -19,8 +19,8 @@ def create_user(email: str, name: str, password: str) -> UserProfile:
     return get_user_model().objects.create_user(email=email, name=name, password=password)
 
 
-def create_ingriedient(name: str, amount: int, user: UserProfile):
-    return Ingredient.objects.create(name=name, amount=amount, user=user)
+def create_ingriedient(name: str, user: UserProfile):
+    return Ingredient.objects.create(name=name, user=user)
 
 
 class IngredientApiTest(TestCase):
@@ -41,12 +41,10 @@ class IngredientApiTest(TestCase):
         )
         create_ingriedient(
             name='potato',
-            amount=10,
             user=self.user
         )
         create_ingriedient(
             name='tomato',
-            amount=10,
             user=new_user
         )
 
@@ -60,12 +58,10 @@ class IngredientApiTest(TestCase):
     def test_list_ingredients_limited_for_user(self):
         create_ingriedient(
             name='potato',
-            amount=10,
             user=self.user
         )
         create_ingriedient(
             name='tomato',
-            amount=10,
             user=self.user
         )
 
@@ -75,23 +71,9 @@ class IngredientApiTest(TestCase):
         serializer = IngredientSerializer(ingredients, many=True)
         self.assertEqual(res.data, serializer.data)
 
-    def test_create_ingredient(self):
-        payload = {
-            'name': 'watermelon',
-            'amount': 100
-        }
-
-        res = self.client.post(INGREDIENTS_URL, payload, format='json')
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        ingredients = Ingredient.objects.filter(user=self.user)
-        ingredient = ingredients[0]
-        self.assertEqual(ingredient.user, self.user)
-        self.assertEqual(str(ingredient), payload['name'])
-
     def test_update_ingredient(self):
         ingredient_details = {
             'name': 'lemon',
-            'amount': 1,
             'user': self.user
         }
 
@@ -99,21 +81,17 @@ class IngredientApiTest(TestCase):
         url = detail_url(ingredient.id)
         payload = {
             'name': 'lemon updated',
-            'amount': 100
         }
 
         res = self.client.put(url, payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         ingredient.refresh_from_db()
         self.assertEqual(ingredient.name, payload['name'])
-        self.assertEqual(ingredient.amount, payload['amount'])
         self.assertEqual(ingredient.user, self.user)
 
     def test_ingredient_partial_update(self):
-        origin_amount = 1000
         ingredient_details = {
             'name': 'lemon',
-            'amount': origin_amount,
             'user': self.user
         }
         ingredient = create_ingriedient(**ingredient_details)
@@ -127,7 +105,6 @@ class IngredientApiTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         ingredient.refresh_from_db()
 
-        self.assertEqual(ingredient.amount, origin_amount)
         self.assertEqual(ingredient.name, payload['name'])
 
     def test_update_not_owned_ingredients(self):
@@ -139,13 +116,11 @@ class IngredientApiTest(TestCase):
 
         ingredient = create_ingriedient(
             name='garlic',
-            amount=10,
             user=user
         )
 
         payload = {
             'name': 'garlic updated',
-            'amount': 1
         }
 
         url = detail_url(ingredient.id)

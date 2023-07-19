@@ -6,7 +6,7 @@ from core.models import Ingredient
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ['id', 'name', 'amount']
+        fields = ['id', 'name']
         read_only_fields = ['id']
 
     # def create(self, validated_data):

@@ -26,7 +26,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ['name', 'amount']
+    list_display = ['name']
 
 
 admin.site.register(UserProfile, UserAdmin)

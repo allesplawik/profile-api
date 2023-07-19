@@ -76,7 +76,6 @@ class IngredientAdminTest(TestCase):
     def test_ingredients_list(self):
         ingredient = create_ingredient(
             name='Onion',
-            amount=100,
             user=self.user
         )
         url = reverse('admin:core_ingredient_changelist')
@@ -84,4 +83,3 @@ class IngredientAdminTest(TestCase):
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
         self.assertContains(res, ingredient.name)
-        self.assertContains(res, ingredient.amount)
