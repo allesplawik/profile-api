@@ -1,8 +1,10 @@
 from django.test import TestCase
 
-from core.models import UserProfile, Ingredient
+from core.models import UserProfile, Ingredient, Recipe
 
 from django.contrib.auth import get_user_model
+
+from decimal import Decimal
 
 
 def create_user(email: str, name: str, password: str) -> UserProfile:
@@ -11,6 +13,14 @@ def create_user(email: str, name: str, password: str) -> UserProfile:
 
 def create_superuser(email: str, name: str, password: str) -> UserProfile:
     return get_user_model().objects.create_superuser(email=email, name=name, password=password)
+
+
+def create_ingriedient(name: str, amount: int, user: UserProfile):
+    return Ingredient.objects.create(name=name, amount=amount, user=user)
+
+
+def create_recipe(**params) -> Recipe:
+    return Recipe.objects.create(**params)
 
 
 class UserProfileTest(TestCase):
@@ -72,11 +82,6 @@ class UserProfileTest(TestCase):
         self.assertTrue(user.is_superuser)
 
 
-def create_ingriedient(name: str, amount: int, user: UserProfile):
-    return Ingredient.objects.create(name=name, amount=amount, user=user
-                                     )
-
-
 class IngredientsModelTest(TestCase):
     def setUp(self):
         self.user = create_user(
@@ -86,7 +91,6 @@ class IngredientsModelTest(TestCase):
         )
 
     def test_create_ingredient_object(self):
-
         ingredient_details = {
             'name': 'potato',
             'amount': 10,
@@ -98,3 +102,25 @@ class IngredientsModelTest(TestCase):
         self.assertEqual(str(ingredient), ingredient_details['name'])
         self.assertEqual(ingredient.user, self.user)
         self.assertEqual(ingredient.amount, ingredient_details['amount'])
+
+
+class RecipeModelTest(TestCase):
+    def setUp(self) -> None:
+        self.user = create_user(
+            email='test@example.com',
+            name='Test User',
+            password='testpass123'
+        )
+
+    def test_create_recipe(self):
+        recipe_details = {
+            'user': self.user,
+            'title': 'Spaghetti',
+            'time_minutes': 45,
+            'price': Decimal('5.50'),
+            'description': 'Spaghetti description'
+        }
+        recipe = create_recipe(**recipe_details)
+
+        self.assertEqual(recipe.user, self.user)
+        self.assertEqual(str(recipe), recipe.title)
